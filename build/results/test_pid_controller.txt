@@ -1,0 +1,5 @@
+test/test_pid_controller.c:20:test_function_should_doBlahAndBlah:PASS
+
+-----------------------
+1 Tests 0 Failures 0 Ignored 
+OK

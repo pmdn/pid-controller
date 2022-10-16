@@ -1,0 +1,53 @@
+[
+ {
+  "directory": "/home/patxi/Projects/Code/pid_controller",
+  "arguments": [
+   "gcc",
+   "-c",
+   "-I.",
+   "-Itest/unity/",
+   "-Isrc/",
+   "-Iinclude/",
+   "-Ilib/",
+   "-DTEST",
+   "test/test_pid_controller.c",
+   "-o",
+   "build/objs/test_pid_controller.o"
+  ],
+  "file": "test/test_pid_controller.c"
+ },
+ {
+  "directory": "/home/patxi/Projects/Code/pid_controller",
+  "arguments": [
+   "gcc",
+   "-c",
+   "-I.",
+   "-Itest/unity/",
+   "-Isrc/",
+   "-Iinclude/",
+   "-Ilib/",
+   "-DTEST",
+   "src/pid_controller.c",
+   "-o",
+   "build/objs/pid_controller.o"
+  ],
+  "file": "src/pid_controller.c"
+ },
+ {
+  "directory": "/home/patxi/Projects/Code/pid_controller",
+  "arguments": [
+   "gcc",
+   "-c",
+   "-I.",
+   "-Itest/unity/",
+   "-Isrc/",
+   "-Iinclude/",
+   "-Ilib/",
+   "-DTEST",
+   "test/unity/unity.c",
+   "-o",
+   "build/objs/unity.o"
+  ],
+  "file": "test/unity/unity.c"
+ }
+]
