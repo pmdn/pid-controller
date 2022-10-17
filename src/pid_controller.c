@@ -10,6 +10,7 @@ void initPID (pidController *pid)
 {
     pid->prevError = 0.0f;
     pid->intTerm = 0.0f;
+    pid->out = 0.0f;
 }
 
 void calculatePID (float reference, float measurement, pidController *pid)

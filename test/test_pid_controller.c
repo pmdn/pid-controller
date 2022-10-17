@@ -26,6 +26,7 @@ void test_initPID_execution(void)
     initPID(&myTestPID);
     TEST_ASSERT_EQUAL_FLOAT(0.0f, myTestPID.prevError);
     TEST_ASSERT_EQUAL_FLOAT(0.0f, myTestPID.intTerm);
+    TEST_ASSERT_EQUAL_FLOAT(0.0f, myTestPID.out);
 }
 
 void test_calculatePID_only_Kp_reference_one_measurement_zero(void)
