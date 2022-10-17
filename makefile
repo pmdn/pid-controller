@@ -40,7 +40,7 @@ RESULTS = $(patsubst $(PATHT)test_%.c,$(PATHR)test_%.txt,$(SRCT) )
 PASSED = `grep -s PASS $(PATHR)*.txt`
 FAIL = `grep -s FAIL $(PATHR)*.txt`
 IGNORE = `grep -s IGNORE $(PATHR)*.txt`
-SUMMARY = `grep -A2 "-" $(PATHR)*.txt`
+SUMMARY = `grep -A2 "\-\-" $(PATHR)*.txt`
 
 test: $(BUILD_PATHS) $(RESULTS)
 	@echo "=============\nRUNNING TESTS:\n============="
