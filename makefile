@@ -45,7 +45,6 @@ CC=gcc
 COMPILE=$(CC) -c
 LINK=$(CC)
 OPT=-O0
-DEPEND=$(CC) -MM -MG -MF
 # generate files that encode make rules for the .h dependencies
 DEPFLAGS=-MP -MD -MF $(PATHD)$*.d
 CFLAGS=-Wall -Wextra -g -I. $(INCDIR) $(OPT) $(DEPFLAGS) -DTEST
@@ -80,7 +79,6 @@ $(PATHO)%.o: %.c $(PATHD)%.d
 	$(COMPILE) $(CFLAGS) $< -o $@ 
 
 
-
 $(PATHB):
 	$(MKDIR) $(PATHB)
 
@@ -98,10 +96,9 @@ $(PATHD)%.d: ;
 
 clean:
 	$(CLEANUP) $(PATHO)*.o
-	$(CLEANUP) $(PATHd)*.d
+	$(CLEANUP) $(PATHD)*.d
 	$(CLEANUP) $(PATHB)*.$(TARGET_EXTENSION)
 	$(CLEANUP) $(PATHR)*.txt
-	@echo $(DEPFILES)
 
 all: clean test
 
