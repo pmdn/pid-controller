@@ -1,9 +1,0 @@
-test/test_pid_controller.c:73:test_initPID_execution:PASS
-test/test_pid_controller.c:74:test_calculatePID_only_Kp_reference_one_measurement_zero:PASS
-test/test_pid_controller.c:75:test_limitValue_value_is_higher:PASS
-test/test_pid_controller.c:76:test_limitValue_value_is_lower:PASS
-test/test_pid_controller.c:77:test_limitValue_value_is_between:PASS
-
------------------------
-5 Tests 0 Failures 0 Ignored 
-OK
