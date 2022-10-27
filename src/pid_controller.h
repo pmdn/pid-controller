@@ -31,6 +31,8 @@ void initPID (pidController *pid);
 
 void calculatePID (float reference, float measurement, float feedforward, pidController *pid);
 
+void precomputePID (pidController *pid);
+
 float limitValue (float input, float highLimit, float lowLimit);
 
 #endif // PID_CONTROLLER_H
