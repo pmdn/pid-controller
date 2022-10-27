@@ -20,6 +20,7 @@ void test_initPID_execution(void)
         .Kd = 1.0f,
         .limMax = 1.0f,
         .limMin = -1.0f,
+        .deltaT = 200e-6, //TODO Constante o variable?
         .prevError = 1.0f,
         .intTerm = 1.0f
     };
@@ -34,14 +35,15 @@ void test_calculatePID_only_Kp_reference_one_measurement_zero(void)
     //test stuff
     pidController myTestPID = {
         .Kp = 1.0f,
-        .Ki = 1.0f,
-        .Kd = 1.0f,
+        .Ki = 0.0f,
+        .Kd = 0.0f,
         .limMax = 1.0f,
         .limMin = -1.0f,
+        .deltaT = 200e-6, //TODO Constante o variable?
         .prevError = 1.0f,
         .intTerm = 1.0f
     };
-    calculatePID(1.0f, 0.0f, &myTestPID);
+    calculatePID(1.0f, 0.0f, 0.0f, &myTestPID);
     float expected = (1.0f - 0.0f) * myTestPID.Kp;
     TEST_ASSERT_EQUAL_FLOAT(expected, myTestPID.out);
 }

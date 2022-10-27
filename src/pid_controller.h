@@ -15,6 +15,9 @@ typedef struct pidController
     float limMax;
     float limMin;
 
+    //Execution period
+    float deltaT;
+
     //Memory
     float prevError;
     float intTerm;
@@ -26,7 +29,7 @@ typedef struct pidController
 
 void initPID (pidController *pid);
 
-void calculatePID (float reference, float measurement, pidController *pid);
+void calculatePID (float reference, float measurement, float feedforward, pidController *pid);
 
 float limitValue (float input, float highLimit, float lowLimit);
 
