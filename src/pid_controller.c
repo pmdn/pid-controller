@@ -7,16 +7,40 @@
  * http://brettbeauregard.com/blog/2011/04/improving-the-beginners-pid-introduction/
  * https://github.com/akharsa/qPID
  * https://github.com/uLipe/PidControlTemplate/tree/master/lib
+ * https://github.com/tcleg/PID_Controller
+ * https://github.com/geekfactory/PID
  */
 
-void initPID (pidController *pid)
+void resetPID (pidController *pid)
 {
     pid->prevError = 0.0f;
     pid->intTerm = 0.0f;
     pid->out = 0.0f;
 }
 
-void calculatePID (float reference, float measurement, float feedforward, pidController *pid)
+void updatePID (pidController *pid,
+                float kp,
+                float ki,
+                float kd,
+                float highLimit,
+                float lowLimit,
+                float deltaTime)
+{
+    pid->Kp = kp;
+    pid->Ki = ki;
+    pid->Kd = kd;
+    pid->limMax = highLimit;
+    pid->limMin = lowLimit;
+    pid->deltaT = deltaTime;
+    pid->escaledKi = pid->Ki * 0.5f * pid->deltaT;
+    pid->escaledKd = pid->Kd / pid->deltaT;
+}
+
+
+void calculatePID (float reference,
+                   float measurement,
+                   float feedforward,
+                   pidController *pid)
 {
     float error = reference - measurement;
 
@@ -28,11 +52,11 @@ void calculatePID (float reference, float measurement, float feedforward, pidCon
     }
     else
     {
-        pid->intTerm += pid->Ki * (error-pid->prevError) * 0.5f * pid->deltaT;
+        pid->intTerm += pid->escaledKi * (error-pid->prevError);
     }
 
     //TODO Filtrado
-    float derivTerm = pid->Kd * (error-pid->prevError) / pid->deltaT;
+    float derivTerm = pid->escaledKd * (error-pid->prevError);
    
     float auxOut = propTerm + pid->intTerm + derivTerm + feedforward;
     auxOut = limitValue(auxOut, pid->limMax, pid->limMin);
@@ -41,14 +65,9 @@ void calculatePID (float reference, float measurement, float feedforward, pidCon
     pid->prevError = error;
 }
 
-void precomputePID (pidController *pid)
-{
-    //TODO
-    //pid->Ki * 0.5f * pid->deltaT;
-    //pid->Kd / pid->deltaT;
-}
-
-float limitValue (float input, float highLimit, float lowLimit)
+float limitValue (float input,
+                  float highLimit,
+                  float lowLimit)
 {
     if (input >= highLimit)
     {

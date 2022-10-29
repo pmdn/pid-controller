@@ -18,6 +18,10 @@ typedef struct pidController
     //Execution period
     float deltaT;
 
+    //Precomputed gains
+    float escaledKi;
+    float escaledKd;
+
     //Memory
     float prevError;
     float intTerm;
@@ -27,12 +31,24 @@ typedef struct pidController
     
 }pidController;
 
-void initPID (pidController *pid);
+void resetPID (pidController *pid);
 
-void calculatePID (float reference, float measurement, float feedforward, pidController *pid);
+void calculatePID (float reference,
+                   float measurement,
+                   float feedforward,
+                   pidController *pid);
 
-void precomputePID (pidController *pid);
+void updatePID (pidController *pid,
+                float kp,
+                float ki,
+                float kd,
+                float highLimit,
+                float lowLimit,
+                float deltaTime);
 
-float limitValue (float input, float highLimit, float lowLimit);
+
+float limitValue (float input,
+                  float highLimit,
+                  float lowLimit);
 
 #endif // PID_CONTROLLER_H
