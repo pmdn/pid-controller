@@ -13,6 +13,7 @@ void resetPID (pidController *pid)
 {
     pid->prevError = 0.0f;
     pid->intTerm = 0.0f;
+    pid->derivTerm = 0.0f;
     pid->out = 0.0f;
 }
 

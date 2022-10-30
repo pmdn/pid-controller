@@ -38,7 +38,7 @@ void test_updatePID_execution(void)
     TEST_ASSERT_EQUAL_FLOAT(escaledKd2Expected, myTestPID.escaledKd2);
 }
 
-void test_initPID_execution(void)
+void test_resetPID_execution(void)
 {
     pidController myTestPID;
     float kp = 1.0f;
@@ -51,11 +51,13 @@ void test_initPID_execution(void)
     updatePID(&myTestPID, kp, ki, kd, highLimit, lowLimit, deltaTime, nFilter);
     myTestPID.prevError = 1.0f;
     myTestPID.intTerm = 1.0f;
+    myTestPID.derivTerm = 1.0f;
     myTestPID.out = 1.0f;
 
     resetPID(&myTestPID);
     TEST_ASSERT_EQUAL_FLOAT(0.0f, myTestPID.prevError);
     TEST_ASSERT_EQUAL_FLOAT(0.0f, myTestPID.intTerm);
+    TEST_ASSERT_EQUAL_FLOAT(0.0f, myTestPID.derivTerm);
     TEST_ASSERT_EQUAL_FLOAT(0.0f, myTestPID.out);
 }
 
@@ -118,7 +120,7 @@ void test_calculatePID_only_Kp_reference_one_measurement_zero(void)
 int main(void) {
     UNITY_BEGIN();
     RUN_TEST(test_updatePID_execution);
-    RUN_TEST(test_initPID_execution);
+    RUN_TEST(test_resetPID_execution);
     RUN_TEST(test_limitValue_value_is_higher);
     RUN_TEST(test_limitValue_value_is_lower);
     RUN_TEST(test_limitValue_value_is_between);
