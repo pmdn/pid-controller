@@ -19,13 +19,15 @@ Updating/creating and resetting functions are also included.
 TBD.
     
 ## References
+
+This other works have been used as reference:
     
-https://github.com/pms67/PID
-https://www.youtube.com/watch?v=zOByx3Izf5U&feature=emb_title
-https://github.com/br3ttb/Arduino-PID-Library
-http://brettbeauregard.com/blog/2011/04/improving-the-beginners-pid-introduction/
-https://github.com/akharsa/qPID
-https://github.com/uLipe/PidControlTemplate/tree/master/lib
-https://github.com/tcleg/PID_Controller
-https://github.com/geekfactory/PID
+- https://github.com/pms67/PID
+- https://www.youtube.com/watch?v=zOByx3Izf5U&feature=emb_title
+- https://github.com/br3ttb/Arduino-PID-Library
+- http://brettbeauregard.com/blog/2011/04/improving-the-beginners-pid-introduction/
+- https://github.com/akharsa/qPID
+- https://github.com/uLipe/PidControlTemplate/tree/master/lib
+- https://github.com/tcleg/PID_Controller
+- https://github.com/geekfactory/PID
 
