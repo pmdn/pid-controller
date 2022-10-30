@@ -1,15 +1,13 @@
-#include "pid_controller.h"
-
-/* Refs:
- * https://github.com/pms67/PID
- * https://www.youtube.com/watch?v=zOByx3Izf5U&feature=emb_title
- * https://github.com/br3ttb/Arduino-PID-Library
- * http://brettbeauregard.com/blog/2011/04/improving-the-beginners-pid-introduction/
- * https://github.com/akharsa/qPID
- * https://github.com/uLipe/PidControlTemplate/tree/master/lib
- * https://github.com/tcleg/PID_Controller
- * https://github.com/geekfactory/PID
+/* PID library for C
+ *
+ * Revision 0.1
+ *
+ * Description: PID controller written in C with integrator anti-windup,
+ * filtered derivative and feed-forward input.
+ * 
  */
+
+#include "pid_controller.h"
 
 void resetPID (pidController *pid)
 {

@@ -37,7 +37,6 @@ void test_updatePID_execution(void)
 
 void test_initPID_execution(void)
 {
-    //test stuff
     pidController myTestPID;
     float kp = 1.0f;
     float ki = 1.0f;
@@ -91,7 +90,6 @@ void test_limitValue_value_is_between(void)
 
 void test_calculatePID_only_Kp_reference_one_measurement_zero(void)
 {
-    //test stuff
     pidController myTestPID;
     float kp = 1.0f;
     float ki = 1.0f;
