@@ -22,7 +22,8 @@ void updatePID (pidController *pid,
                 float kd,
                 float highLimit,
                 float lowLimit,
-                float deltaTime)
+                float deltaTime,
+                int nFilter)
 {
     pid->Kp = kp;
     pid->Ki = ki;
@@ -30,8 +31,10 @@ void updatePID (pidController *pid,
     pid->limMax = highLimit;
     pid->limMin = lowLimit;
     pid->deltaT = deltaTime;
+    pid->filterN = nFilter;
     pid->escaledKi = pid->Ki * 0.5f * pid->deltaT;
-    pid->escaledKd = pid->Kd / pid->deltaT;
+    pid->escaledKd1 = 1.0f / (1.0f + (float) pid->filterN * pid->deltaT);
+    pid->escaledKd2 = pid->Kd * ((float) pid->filterN / (1.0f + (float) pid->filterN * pid->deltaT));
 }
 
 
@@ -53,10 +56,9 @@ void calculatePID (float reference,
         pid->intTerm += pid->escaledKi * (error-pid->prevError);
     }
 
-    //TODO Filtrado
-    float derivTerm = pid->escaledKd * (error-pid->prevError);
+    pid->derivTerm = pid->escaledKd1 * pid->derivTerm + pid->escaledKd2 * (error-pid->prevError);
    
-    float auxOut = propTerm + pid->intTerm + derivTerm + feedforward;
+    float auxOut = propTerm + pid->intTerm + pid->derivTerm + feedforward;
     auxOut = limitValue(auxOut, pid->limMax, pid->limMin);
     pid->out = auxOut;
 

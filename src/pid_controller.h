@@ -32,13 +32,18 @@ typedef struct pidController
     //Execution period
     float deltaT;
 
+    //Derivative filter coefficient. Should be high, e.g 100.
+    int filterN;
+
     //Precomputed gains
     float escaledKi;
-    float escaledKd;
+    float escaledKd1;
+    float escaledKd2;
 
     //Memory
     float prevError;
     float intTerm;
+    float derivTerm;
 
     //Output
     float out;
@@ -74,6 +79,7 @@ void calculatePID (float reference,
  * @param[in] highLimit - higher limit for the output.
  * @param[in] lowLimit - lower limit for the output.
  * @param[in] deltaTime - execution period of the control loop.
+ * @param[in] nFilter - derivative filter coefficient.
  */ 
 
 void updatePID (pidController *pid,
@@ -82,7 +88,8 @@ void updatePID (pidController *pid,
                 float kd,
                 float highLimit,
                 float lowLimit,
-                float deltaTime);
+                float deltaTime,
+                int nFilter);
 
 /**
  * @brief Limits the value between the desired interval.

@@ -21,10 +21,12 @@ void test_updatePID_execution(void)
     float highLimit = 1.0f;
     float lowLimit = 1.0f;
     float deltaTime = 200e-6;
+    int nFilter = 100;
     float escaledKiExpected = ki * 0.5f * deltaTime;
-    float escaledKdExpected = kd / deltaTime;
+    float escaledKd1Expected = 1.0f / (1.0f + (float) nFilter * deltaTime);
+    float escaledKd2Expected = kd * ((float) nFilter / (1.0f + (float) nFilter * deltaTime));
     
-    updatePID(&myTestPID, kp, ki, kd, highLimit, lowLimit, deltaTime);
+    updatePID(&myTestPID, kp, ki, kd, highLimit, lowLimit, deltaTime, nFilter);
     TEST_ASSERT_EQUAL_FLOAT(kp, myTestPID.Kp);
     TEST_ASSERT_EQUAL_FLOAT(ki, myTestPID.Ki);
     TEST_ASSERT_EQUAL_FLOAT(kd, myTestPID.Kd);
@@ -32,7 +34,8 @@ void test_updatePID_execution(void)
     TEST_ASSERT_EQUAL_FLOAT(lowLimit, myTestPID.limMin);
     TEST_ASSERT_EQUAL_FLOAT(deltaTime, myTestPID.deltaT);
     TEST_ASSERT_EQUAL_FLOAT(escaledKiExpected, myTestPID.escaledKi);
-    TEST_ASSERT_EQUAL_FLOAT(escaledKdExpected, myTestPID.escaledKd);
+    TEST_ASSERT_EQUAL_FLOAT(escaledKd1Expected, myTestPID.escaledKd1);
+    TEST_ASSERT_EQUAL_FLOAT(escaledKd2Expected, myTestPID.escaledKd2);
 }
 
 void test_initPID_execution(void)
@@ -44,7 +47,8 @@ void test_initPID_execution(void)
     float highLimit = 1.0f;
     float lowLimit = 1.0f;
     float deltaTime = 200e-6;
-    updatePID(&myTestPID, kp, ki, kd, highLimit, lowLimit, deltaTime);
+    int nFilter = 100;
+    updatePID(&myTestPID, kp, ki, kd, highLimit, lowLimit, deltaTime, nFilter);
     myTestPID.prevError = 1.0f;
     myTestPID.intTerm = 1.0f;
     myTestPID.out = 1.0f;
@@ -97,7 +101,8 @@ void test_calculatePID_only_Kp_reference_one_measurement_zero(void)
     float highLimit = 1.0f;
     float lowLimit = 1.0f;
     float deltaTime = 200e-6;
-    updatePID(&myTestPID, kp, ki, kd, highLimit, lowLimit, deltaTime);
+    int nFilter = 100;
+    updatePID(&myTestPID, kp, ki, kd, highLimit, lowLimit, deltaTime, nFilter);
     myTestPID.prevError = 1.0f;
     myTestPID.intTerm = 1.0f;
     float reference = 1.0f;
