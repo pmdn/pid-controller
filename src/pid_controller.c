@@ -1,82 +1,82 @@
-/* PID library for C
+/**
+ * \file            pid_controller.c
+ * \brief           PID controller written in C with integrator anti-windup,
+ *                  filtered derivative and feed-forward input.
  *
- * Revision 0.1
- *
- * Description: PID controller written in C with integrator anti-windup,
- * filtered derivative and feed-forward input.
- * 
+ * Author:
+ * Version:         0.1
  */
 
 #include "pid_controller.h"
 
-void resetPID (pidController *pid)
+void pid_reset(pid_controller_t *pid)
 {
-    pid->prevError = 0.0f;
-    pid->intTerm = 0.0f;
-    pid->derivTerm = 0.0f;
+    pid->error_previous = 0.0f;
+    pid->integral_term = 0.0f;
+    pid->derivative_term = 0.0f;
     pid->out = 0.0f;
 }
 
-void updatePID (pidController *pid,
+void pid_update(pid_controller_t *pid,
                 float kp,
                 float ki,
                 float kd,
-                float highLimit,
-                float lowLimit,
-                float deltaTime,
-                int nFilter)
+                float limit_high,
+                float limit_low,
+                float time_delta,
+                int32_t filter_n)
 {
-    pid->Kp = kp;
-    pid->Ki = ki;
-    pid->Kd = kd;
-    pid->limMax = highLimit;
-    pid->limMin = lowLimit;
-    pid->deltaT = deltaTime;
-    pid->filterN = nFilter;
-    pid->escaledKi = pid->Ki * 0.5f * pid->deltaT;
-    pid->escaledKd1 = 1.0f / (1.0f + (float) pid->filterN * pid->deltaT);
-    pid->escaledKd2 = pid->Kd * ((float) pid->filterN / (1.0f + (float) pid->filterN * pid->deltaT));
+    pid->kp = kp;
+    pid->ki = ki;
+    pid->kd = kd;
+    pid->limit_max = limit_high;
+    pid->limit_min = limit_low;
+    pid->time_diff = time_delta;
+    pid->filter_n = filter_n;
+    pid->ki_escaled = pid->ki * 0.5f * pid->time_diff;
+    pid->kd1_escaled = 1.0f / (1.0f + (float) pid->filter_n * pid->time_diff);
+    pid->kd2_escaled = pid->kd * ((float) pid->filter_n / (1.0f + (float) pid->filter_n * pid->time_diff));
 }
 
 
-void calculatePID (float reference,
+void pid_calculate(float reference,
                    float measurement,
                    float feedforward,
-                   pidController *pid)
+                   pid_controller_t *pid)
 {
     float error = reference - measurement;
 
-    float propTerm = pid->Kp * error;
+    float proportional_term = pid->kp * error;
 
-    if (((pid->out >= pid->limMax) || (pid->out <= pid->limMin)) && (error * pid->out > 0.0f))
+    if (((pid->out >= pid->limit_max) || (pid->out <= pid->limit_min)) && (error * pid->out > 0.0f))
     {
-        pid->intTerm += 0.0f;
+        pid->integral_term += 0.0f;
     }
     else
     {
-        pid->intTerm += pid->escaledKi * (error-pid->prevError);
+        pid->integral_term += pid->ki_escaled * (error-pid->error_previous);
     }
 
-    pid->derivTerm = pid->escaledKd1 * pid->derivTerm + pid->escaledKd2 * (error-pid->prevError);
+    pid->derivative_term = pid->kd1_escaled * pid->derivative_term + pid->kd2_escaled * (error-pid->error_previous);
    
-    float auxOut = propTerm + pid->intTerm + pid->derivTerm + feedforward;
-    auxOut = limitValue(auxOut, pid->limMax, pid->limMin);
-    pid->out = auxOut;
+    float out_aux = proportional_term + pid->integral_term + pid->derivative_term + feedforward;
+    out_aux = value_limit(out_aux, pid->limit_max, pid->limit_min);
+    pid->out = out_aux;
 
-    pid->prevError = error;
+    pid->error_previous = error;
 }
 
-float limitValue (float input,
-                  float highLimit,
-                  float lowLimit)
+float value_limit(float input,
+                  float limit_high,
+                  float limit_low)
 {
-    if (input >= highLimit)
+    if (input >= limit_high)
     {
-        return highLimit;
+        return limit_high;
     }
-    else if (input <= lowLimit)
+    else if (input <= limit_low)
     {
-        return lowLimit;
+        return limit_low;
     }
     return input;
 }

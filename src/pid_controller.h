@@ -1,106 +1,117 @@
-/* PID library for C
+/**
+ * \file            pid_controller.h
+ * \brief           PID controller written in C with integrator anti-windup,
+ *                  filtered derivative and feed-forward input.
  *
- * Revision 0.1
- *
- * Description: PID controller written in C with integrator anti-windup,
- * filtered derivative and feed-forward input.
- * 
+ * Author:
+ * Version:         0.1
  */
-
 
 #ifndef PID_CONTROLLER_H
 #define PID_CONTROLLER_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 
 #include <stdio.h>
 #include <stdint.h>
 
 /**
- * Structure that holds all the PID controller data, multiple instances are allowed.
- */
+ * \brief           This is the pid controller struct
+ * \note            This structure holds all the PID controller data,
+ *                  multiple instances are allowed.
+ */    
 
-typedef struct pidController
+typedef struct pid_controller
 {
     //Gains
-    float Kp;
-    float Ki;
-    float Kd;
+    float kp;
+    float ki;
+    float kd;
 
     //Limits
-    float limMax;
-    float limMin;
+    float limit_max;
+    float limit_min;
 
     //Execution period
-    float deltaT;
+    float time_diff;
 
     //Derivative filter coefficient. Should be high, e.g 100.
-    int filterN;
+    int32_t filter_n;
 
     //Precomputed gains
-    float escaledKi;
-    float escaledKd1;
-    float escaledKd2;
+    float ki_escaled;
+    float kd1_escaled;
+    float kd2_escaled;
 
     //Memory
-    float prevError;
-    float intTerm;
-    float derivTerm;
+    float error_previous;
+    float integral_term;
+    float derivative_term;
 
     //Output
     float out;
     
-}pidController;
+}pid_controller_t;
 
 /**
- * @brief Resets the PID controller.
- * @param[in] pid - pointer the PID structure.
+ * /brief           Resets the PID controller.
+ * /param[in]       pid: pointer the PID structure.
  */ 
 
-void resetPID (pidController *pid);
+void pid_reset(pid_controller_t *pid);
 
 /**
- * @brief Calculates the output of the PID controller.
- * @param[in] reference - reference for the controlled variable.
- * @param[in] measurement - measurement of the controlled variable.
- * @param[in] feedforward - value of the feed-forward compensation.
- * @param[in] pid - pointer the PID structure.
+ * /brief           Calculates the output of the PID controller.
+ * /param[in]       reference: reference for the controlled variable.
+ * /param[in]       measurement: measurement of the controlled variable.
+ * /param[in]       feedforward: value of the feed-forward compensation.
+ * /param[in]       pid: pointer the PID structure.
  */ 
 
-void calculatePID (float reference,
+void pid_calculate(float reference,
                    float measurement,
                    float feedforward,
-                   pidController *pid);
+                   pid_controller_t *pid);
 
 /**
- * @brief Creates/updates the PID controller.
- * @param[in] pid - pointer the PID structure.
- * @param[in] kp - value of the proportional gain.
- * @param[in] ki - value of the integral gain.
- * @param[in] kd - value of the derivative gain.
- * @param[in] highLimit - higher limit for the output.
- * @param[in] lowLimit - lower limit for the output.
- * @param[in] deltaTime - execution period of the control loop.
- * @param[in] nFilter - derivative filter coefficient.
+ * /brief           Creates/updates the PID controller.
+ * /param[in]       pid: pointer the PID structure.
+ * /param[in]       kp: value of the proportional gain.
+ * /param[in]       ki: value of the integral gain.
+ * /param[in]       kd: value of the derivative gain.
+ * /param[in]       limit_hig: higher limit for the output.
+ * /param[in]       limit_low: lower limit for the output.
+ * /param[in]       time_delta: execution period of the control loop.
+ * /param[in]       filter_n: derivative filter coefficient.
  */ 
 
-void updatePID (pidController *pid,
+void pid_update(pid_controller_t *pid,
                 float kp,
                 float ki,
                 float kd,
-                float highLimit,
-                float lowLimit,
-                float deltaTime,
-                int nFilter);
+                float limit_high,
+                float limit_low,
+                float time_delta,
+                int32_t filter_n);
 
 /**
- * @brief Limits the value between the desired interval.
- * @param[in] input - value to be limitted.
- * @param[in] highLimit - higher limit for the output.
- * @param[in] lowLimit - lower limit for the output.
- * @return returns the limitted value.
+ * /brief           Limits the value between the desired interval.
+ * /param[in]       input: value to be limitted.
+ * /param[in]       limit_high: higher limit for the output.
+ * /param[in]       limit_low: lower limit for the output.
+ * /return          returns the limitted value.
  */
 
-float limitValue (float input,
-                  float highLimit,
-                  float lowLimit);
+float value_limit(float input,
+                  float limit_high,
+                  float limit_low);
+
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif // PID_CONTROLLER_H

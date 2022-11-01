@@ -1,6 +1,15 @@
+/**
+ * \file            test_pid_controller.c
+ * \brief           Unit tests for PID controller library
+ *
+ * Author:
+ * Version:         0.1
+ */
+
 #include "unity.h"
 #include "pid_controller.h"
 #include "unity_internals.h"
+#include <stdint.h>
 
 void setUp(void)
 {
@@ -14,106 +23,106 @@ void tearDown(void)
 
 void test_updatePID_execution(void)
 {
-    pidController myTestPID;
+    pid_controller_t my_test_pid;
     float kp = 1.0f;
     float ki = 1.0f;
     float kd = 1.0f;
-    float highLimit = 1.0f;
-    float lowLimit = 1.0f;
-    float deltaTime = 200e-6;
-    int nFilter = 100;
-    float escaledKiExpected = ki * 0.5f * deltaTime;
-    float escaledKd1Expected = 1.0f / (1.0f + (float) nFilter * deltaTime);
-    float escaledKd2Expected = kd * ((float) nFilter / (1.0f + (float) nFilter * deltaTime));
+    float limit_high = 1.0f;
+    float limit_low = 1.0f;
+    float time_delta = 200e-6;
+    int32_t filter_n = 100;
+    float ki_escaled_expected = ki * 0.5f * time_delta;
+    float kd1_escaled_expected = 1.0f / (1.0f + (float) filter_n * time_delta);
+    float kd2_escaled_expected = kd * ((float) filter_n / (1.0f + (float) filter_n * time_delta));
     
-    updatePID(&myTestPID, kp, ki, kd, highLimit, lowLimit, deltaTime, nFilter);
-    TEST_ASSERT_EQUAL_FLOAT(kp, myTestPID.Kp);
-    TEST_ASSERT_EQUAL_FLOAT(ki, myTestPID.Ki);
-    TEST_ASSERT_EQUAL_FLOAT(kd, myTestPID.Kd);
-    TEST_ASSERT_EQUAL_FLOAT(highLimit, myTestPID.limMax);
-    TEST_ASSERT_EQUAL_FLOAT(lowLimit, myTestPID.limMin);
-    TEST_ASSERT_EQUAL_FLOAT(deltaTime, myTestPID.deltaT);
-    TEST_ASSERT_EQUAL_FLOAT(escaledKiExpected, myTestPID.escaledKi);
-    TEST_ASSERT_EQUAL_FLOAT(escaledKd1Expected, myTestPID.escaledKd1);
-    TEST_ASSERT_EQUAL_FLOAT(escaledKd2Expected, myTestPID.escaledKd2);
+    pid_update(&my_test_pid, kp, ki, kd, limit_high, limit_low, time_delta, filter_n);
+    TEST_ASSERT_EQUAL_FLOAT(kp, my_test_pid.kp);
+    TEST_ASSERT_EQUAL_FLOAT(ki, my_test_pid.ki);
+    TEST_ASSERT_EQUAL_FLOAT(kd, my_test_pid.kd);
+    TEST_ASSERT_EQUAL_FLOAT(limit_high, my_test_pid.limit_max);
+    TEST_ASSERT_EQUAL_FLOAT(limit_low, my_test_pid.limit_min);
+    TEST_ASSERT_EQUAL_FLOAT(time_delta, my_test_pid.time_diff);
+    TEST_ASSERT_EQUAL_FLOAT(ki_escaled_expected, my_test_pid.ki_escaled);
+    TEST_ASSERT_EQUAL_FLOAT(kd1_escaled_expected, my_test_pid.kd1_escaled);
+    TEST_ASSERT_EQUAL_FLOAT(kd2_escaled_expected, my_test_pid.kd2_escaled);
 }
 
 void test_resetPID_execution(void)
 {
-    pidController myTestPID;
+    pid_controller_t my_test_pid;
     float kp = 1.0f;
     float ki = 1.0f;
     float kd = 1.0f;
-    float highLimit = 1.0f;
-    float lowLimit = 1.0f;
-    float deltaTime = 200e-6;
+    float limit_high = 1.0f;
+    float limit_low = 1.0f;
+    float time_delta = 200e-6;
     int nFilter = 100;
-    updatePID(&myTestPID, kp, ki, kd, highLimit, lowLimit, deltaTime, nFilter);
-    myTestPID.prevError = 1.0f;
-    myTestPID.intTerm = 1.0f;
-    myTestPID.derivTerm = 1.0f;
-    myTestPID.out = 1.0f;
+    pid_update(&my_test_pid, kp, ki, kd, limit_high, limit_low, time_delta, nFilter);
+    my_test_pid.error_previous = 1.0f;
+    my_test_pid.integral_term = 1.0f;
+    my_test_pid.derivative_term = 1.0f;
+    my_test_pid.out = 1.0f;
 
-    resetPID(&myTestPID);
-    TEST_ASSERT_EQUAL_FLOAT(0.0f, myTestPID.prevError);
-    TEST_ASSERT_EQUAL_FLOAT(0.0f, myTestPID.intTerm);
-    TEST_ASSERT_EQUAL_FLOAT(0.0f, myTestPID.derivTerm);
-    TEST_ASSERT_EQUAL_FLOAT(0.0f, myTestPID.out);
+    pid_reset(&my_test_pid);
+    TEST_ASSERT_EQUAL_FLOAT(0.0f, my_test_pid.error_previous);
+    TEST_ASSERT_EQUAL_FLOAT(0.0f, my_test_pid.integral_term);
+    TEST_ASSERT_EQUAL_FLOAT(0.0f, my_test_pid.derivative_term);
+    TEST_ASSERT_EQUAL_FLOAT(0.0f, my_test_pid.out);
 }
 
 void test_limitValue_value_is_higher(void)
 {
-    float inputValue = 300.0f;
-    float highLimit = 100.0f;
-    float lowLimit = 0.0f;
+    float input = 300.0f;
+    float limit_high = 100.0f;
+    float limit_low = 0.0f;
     float expected = 100.0f;
     
-    float actual = limitValue(inputValue, highLimit, lowLimit);
+    float actual = value_limit(input, limit_high, limit_low);
     TEST_ASSERT_EQUAL_FLOAT(expected, actual);
 }
 
 void test_limitValue_value_is_lower(void)
 {
-    float inputValue = -300.0f;
-    float highLimit = 100.0f;
-    float lowLimit = 0.0f;
+    float input = -300.0f;
+    float limit_high = 100.0f;
+    float limit_low = 0.0f;
     float expected = 0.0f;
     
-    float actual = limitValue(inputValue, highLimit, lowLimit);
+    float actual = value_limit(input, limit_high, limit_low);
     TEST_ASSERT_EQUAL_FLOAT(expected, actual);
 }
 
 void test_limitValue_value_is_between(void)
 {
-    float inputValue = 50.0f;
-    float highLimit = 100.0f;
-    float lowLimit = 0.0f;
+    float input = 50.0f;
+    float limit_high = 100.0f;
+    float limit_low = 0.0f;
     float expected = 50.0f;
-    float actual = limitValue(inputValue, highLimit, lowLimit);
+    float actual = value_limit(input, limit_high, limit_low);
 
     TEST_ASSERT_EQUAL_FLOAT(expected, actual);
 }
 
 void test_calculatePID_only_Kp_reference_one_measurement_zero(void)
 {
-    pidController myTestPID;
+    pid_controller_t my_test_pid;
     float kp = 1.0f;
     float ki = 1.0f;
     float kd = 1.0f;
-    float highLimit = 1.0f;
-    float lowLimit = 1.0f;
-    float deltaTime = 200e-6;
-    int nFilter = 100;
-    updatePID(&myTestPID, kp, ki, kd, highLimit, lowLimit, deltaTime, nFilter);
-    myTestPID.prevError = 1.0f;
-    myTestPID.intTerm = 1.0f;
+    float limit_high = 1.0f;
+    float limit_low = 1.0f;
+    float time_delta = 200e-6;
+    int32_t filter_n = 100;
+    pid_update(&my_test_pid, kp, ki, kd, limit_high, limit_low, time_delta, filter_n);
+    my_test_pid.error_previous = 1.0f;
+    my_test_pid.integral_term = 1.0f;
     float reference = 1.0f;
     float measurement = 0.0f;
     float feedforward = 0.0f;
-    float expected = (reference - measurement) * myTestPID.Kp;
+    float expected = (reference - measurement) * my_test_pid.kp;
     
-    calculatePID(reference, measurement, feedforward, &myTestPID);
-    TEST_ASSERT_EQUAL_FLOAT(expected, myTestPID.out);
+    pid_calculate(reference, measurement, feedforward, &my_test_pid);
+    TEST_ASSERT_EQUAL_FLOAT(expected, my_test_pid.out);
 }
 
 // tests are called here
