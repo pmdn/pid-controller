@@ -3,7 +3,7 @@
  * \brief           PID controller written in C with integrator anti-windup,
  *                  filtered derivative and feed-forward input.
  *
- * Author:
+ * Author:          pmdn <pmdn@mailbox.org>
  * Version:         0.1
  */
 

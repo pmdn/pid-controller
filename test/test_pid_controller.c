@@ -2,7 +2,7 @@
  * \file            test_pid_controller.c
  * \brief           Unit tests for PID controller library
  *
- * Author:
+ * Author:          pmdn <pmdn@mailbox.org>
  * Version:         0.1
  */
 
@@ -107,8 +107,8 @@ void test_calculatePID_only_Kp_reference_one_measurement_zero(void)
 {
     pid_controller_t my_test_pid;
     float kp = 1.0f;
-    float ki = 1.0f;
-    float kd = 1.0f;
+    float ki = 0.0f;
+    float kd = 0.0f;
     float limit_high = 1.0f;
     float limit_low = 1.0f;
     float time_delta = 200e-6;
@@ -119,7 +119,7 @@ void test_calculatePID_only_Kp_reference_one_measurement_zero(void)
     float reference = 1.0f;
     float measurement = 0.0f;
     float feedforward = 0.0f;
-    float expected = (reference - measurement) * my_test_pid.kp;
+    float expected = (reference - measurement) * kp;
     
     pid_calculate(reference, measurement, feedforward, &my_test_pid);
     TEST_ASSERT_EQUAL_FLOAT(expected, my_test_pid.out);

@@ -3,7 +3,7 @@
  * \brief           PID controller written in C with integrator anti-windup,
  *                  filtered derivative and feed-forward input.
  *
- * Author:
+ * Author:          pmdn <pmdn@mailbox.org>
  * Version:         0.1
  */
 
@@ -37,7 +37,6 @@ void pid_update(pid_controller_t *pid,
     pid->kd1_escaled = 1.0f / (1.0f + (float) pid->filter_n * pid->time_diff);
     pid->kd2_escaled = pid->kd * ((float) pid->filter_n / (1.0f + (float) pid->filter_n * pid->time_diff));
 }
-
 
 void pid_calculate(float reference,
                    float measurement,
