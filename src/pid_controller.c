@@ -47,6 +47,7 @@ void pid_calculate(float reference,
 
     float proportional_term = pid->kp * error;
 
+    // Clamping anti-windup
     if (((pid->out >= pid->limit_max) || (pid->out <= pid->limit_min)) && (error * pid->out > 0.0f))
     {
         pid->integral_term += 0.0f;
@@ -59,15 +60,15 @@ void pid_calculate(float reference,
     pid->derivative_term = pid->kd1_escaled * pid->derivative_term + pid->kd2_escaled * (error-pid->error_previous);
    
     float out_aux = proportional_term + pid->integral_term + pid->derivative_term + feedforward;
-    out_aux = value_limit(out_aux, pid->limit_max, pid->limit_min);
+    out_aux = pid_limit(out_aux, pid->limit_max, pid->limit_min);
     pid->out = out_aux;
 
     pid->error_previous = error;
 }
 
-float value_limit(float input,
-                  float limit_high,
-                  float limit_low)
+float pid_limit(float input,
+                float limit_high,
+                float limit_low)
 {
     if (input >= limit_high)
     {

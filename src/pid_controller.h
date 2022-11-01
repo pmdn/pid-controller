@@ -105,9 +105,9 @@ void pid_update(pid_controller_t *pid,
  * /return          returns the limitted value.
  */
 
-float value_limit(float input,
-                  float limit_high,
-                  float limit_low);
+float pid_limit(float input,
+                float limit_high,
+                float limit_low);
 
 
 #ifdef __cplusplus

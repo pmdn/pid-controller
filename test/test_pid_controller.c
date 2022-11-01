@@ -21,7 +21,7 @@ void tearDown(void)
     // clean stuff up here
 }
 
-void test_updatePID_execution(void)
+void test_pid_update_execution(void)
 {
     pid_controller_t my_test_pid;
     float kp = 1.0f;
@@ -47,7 +47,7 @@ void test_updatePID_execution(void)
     TEST_ASSERT_EQUAL_FLOAT(kd2_escaled_expected, my_test_pid.kd2_escaled);
 }
 
-void test_resetPID_execution(void)
+void test_pid_reset_execution(void)
 {
     pid_controller_t my_test_pid;
     float kp = 1.0f;
@@ -70,40 +70,40 @@ void test_resetPID_execution(void)
     TEST_ASSERT_EQUAL_FLOAT(0.0f, my_test_pid.out);
 }
 
-void test_limitValue_value_is_higher(void)
+void test_pid_limit_value_is_higher(void)
 {
     float input = 300.0f;
     float limit_high = 100.0f;
     float limit_low = 0.0f;
     float expected = 100.0f;
     
-    float actual = value_limit(input, limit_high, limit_low);
+    float actual = pid_limit(input, limit_high, limit_low);
     TEST_ASSERT_EQUAL_FLOAT(expected, actual);
 }
 
-void test_limitValue_value_is_lower(void)
+void test_pid_limit_value_is_lower(void)
 {
     float input = -300.0f;
     float limit_high = 100.0f;
     float limit_low = 0.0f;
     float expected = 0.0f;
     
-    float actual = value_limit(input, limit_high, limit_low);
+    float actual = pid_limit(input, limit_high, limit_low);
     TEST_ASSERT_EQUAL_FLOAT(expected, actual);
 }
 
-void test_limitValue_value_is_between(void)
+void test_pid_limit_value_is_between(void)
 {
     float input = 50.0f;
     float limit_high = 100.0f;
     float limit_low = 0.0f;
     float expected = 50.0f;
-    float actual = value_limit(input, limit_high, limit_low);
+    float actual = pid_limit(input, limit_high, limit_low);
 
     TEST_ASSERT_EQUAL_FLOAT(expected, actual);
 }
 
-void test_calculatePID_only_Kp_reference_one_measurement_zero(void)
+void test_pid_calculate_only_Kp_reference_one_measurement_zero(void)
 {
     pid_controller_t my_test_pid;
     float kp = 1.0f;
@@ -128,11 +128,11 @@ void test_calculatePID_only_Kp_reference_one_measurement_zero(void)
 // tests are called here
 int main(void) {
     UNITY_BEGIN();
-    RUN_TEST(test_updatePID_execution);
-    RUN_TEST(test_resetPID_execution);
-    RUN_TEST(test_limitValue_value_is_higher);
-    RUN_TEST(test_limitValue_value_is_lower);
-    RUN_TEST(test_limitValue_value_is_between);
-    RUN_TEST(test_calculatePID_only_Kp_reference_one_measurement_zero);
+    RUN_TEST(test_pid_update_execution);
+    RUN_TEST(test_pid_reset_execution);
+    RUN_TEST(test_pid_limit_value_is_higher);
+    RUN_TEST(test_pid_limit_value_is_lower);
+    RUN_TEST(test_pid_limit_value_is_between);
+    RUN_TEST(test_pid_calculate_only_Kp_reference_one_measurement_zero);
     return UNITY_END();
 }
